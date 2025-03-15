@@ -103,13 +103,11 @@ export const GetWebsiteStatus = async (req: Request, res: Response) => {
       },
     });
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        data: website,
-        message: "Website status retrieved successfully",
-      });
+    res.status(200).json({
+      success: true,
+      data: website,
+      message: "Website status retrieved successfully",
+    });
   } catch (error) {
     console.error("Failed to delete Website", error);
     res.status(500).json({ success: false, message: "Internal server error" });
@@ -142,4 +140,9 @@ export const DeleteWebsite = async (req: Request, res: Response) => {
     console.error("Failed to delete Website", error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
+};
+
+export const Payout = async (req: Request, res: Response) => {
+  try {
+  } catch (error) {}
 };
