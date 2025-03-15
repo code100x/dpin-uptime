@@ -236,7 +236,7 @@ function App() {
 
             const token = await getToken();
             setIsModalOpen(false)
-            axios.post(`${API_BACKEND_URL}/api/v1/website`, {
+            axios.post(`${API_BACKEND_URL}/api/v1/website/create`, {
                 url,
             }, {
                 headers: {
