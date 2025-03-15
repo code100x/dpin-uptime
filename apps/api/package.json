@@ -3,7 +3,8 @@
   "module": "index.ts",
   "type": "module",
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/morgan": "^1.9.9"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
@@ -17,6 +18,8 @@
     "db": "*",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
-    "jwt": "^0.2.0"
+    "jwt": "^0.2.0",
+    "morgan": "^1.10.0",
+    "zod": "^3.24.2"
   }
 }
