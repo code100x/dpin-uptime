@@ -1,6 +1,6 @@
 import { randomUUIDv7, type ServerWebSocket } from "bun";
 import type { IncomingMessage, SignupIncomingMessage } from "common/types";
-import { prismaClient } from "db/client";
+import { client } from "db/client";
 import { PublicKey } from "@solana/web3.js";
 import nacl from "tweetnacl";
 import nacl_util from "tweetnacl-util";
@@ -44,7 +44,7 @@ Bun.serve({
 });
 
 async function signupHandler(ws: ServerWebSocket<unknown>, { ip, publicKey, signedMessage, callbackId }: SignupIncomingMessage) {
-    const validatorDb = await prismaClient.validator.findFirst({
+    const validatorDb = await client.validator.findFirst({
         where: {
             publicKey,
         },
@@ -68,7 +68,7 @@ async function signupHandler(ws: ServerWebSocket<unknown>, { ip, publicKey, sign
     }
     
     //TODO: Given the ip, return the location
-    const validator = await prismaClient.validator.create({
+    const validator = await client.validator.create({
         data: {
             ip,
             publicKey,
@@ -103,7 +103,7 @@ async function verifyMessage(message: string, publicKey: string, signature: stri
 }
 
 setInterval(async () => {
-    const websitesToMonitor = await prismaClient.website.findMany({
+    const websitesToMonitor = await client.website.findMany({
         where: {
             disabled: false,
         },
@@ -133,7 +133,7 @@ setInterval(async () => {
                         return;
                     }
 
-                    await prismaClient.$transaction(async (tx) => {
+                    await client.$transaction(async (tx) => {
                         await tx.websiteTick.create({
                             data: {
                                 websiteId: website.id,
