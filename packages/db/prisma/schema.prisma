@@ -27,23 +27,35 @@ model Website {
 }
 
 model Validator {
-  id        String      @id     @default(uuid())
-  publicKey String
-  location  String
-  ip        String
-  pendingPayouts  Int         @default(0)
-  ticks     WebsiteTick[]
+  id                 String              @id @default(uuid())
+  publicKey          String
+  location           String
+  ip                 String
+  pendingPayouts     Int                 @default(0)
+  ticks              WebsiteTick[]
+  isAmountClaimed    Boolean             @default(false)
+  solanaTransactions SolanaTransaction[]
 }
 
 model WebsiteTick {
-  id              String      @id     @default(uuid())
-  websiteId       String
-  validatorId     String
-  createdAt       DateTime
-  status          WebsiteStatus
-  latency         Float
-  website         Website    @relation(fields: [websiteId], references: [id])
-  validator       Validator    @relation(fields: [validatorId], references: [id])
+  id          String        @id @default(uuid())
+  websiteId   String
+  validatorId String
+  createdAt   DateTime
+  status      WebsiteStatus
+  latency     Float
+  website     Website       @relation(fields: [websiteId], references: [id])
+  validator   Validator     @relation(fields: [validatorId], references: [id])
+}
+
+
+model SolanaTransaction {
+  id          String    @id @default(uuid())
+  validatorId String
+  amount      Int
+  createdAt   DateTime
+  validator   Validator @relation(fields: [validatorId], references: [id])
+  signature   String
 }
 
 enum WebsiteStatus {
