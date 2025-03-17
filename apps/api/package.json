@@ -15,6 +15,7 @@
     "@types/jsonwebtoken": "^9.0.9",
     "cors": "^2.8.5",
     "db": "*",
+    "cache":"*",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "jwt": "^0.2.0"

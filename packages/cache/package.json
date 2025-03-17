@@ -1,7 +1,8 @@
 {
-  "name": "db",
+  "name": "cache",
   "module": "index.ts",
   "type": "module",
+  "private": true,
   "exports": {
     "./client": "./src/index.ts"
   },
@@ -9,13 +10,9 @@
     "@types/bun": "latest"
   },
   "peerDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5"
   },
   "dependencies": {
-    "@prisma/client": "6.5.0",
-    "prisma": "^6.5.0"
-  },
-  "prisma": {
-    "seed": "./prisma/seed.ts"
+    "ioredis": "^5.6.0"
   }
 }
