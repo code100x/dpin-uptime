@@ -14,36 +14,37 @@ datasource db {
 }
 
 model User {
-  id              String      @id     @default(uuid())
-  email           String
+  id    String @id @default(uuid())
+  email String
 }
 
 model Website {
-  id        String      @id     @default(uuid())
-  url       String
-  userId    String
-  ticks     WebsiteTick[]
-  disabled  Boolean     @default(false)
+  id       String        @id @default(uuid())
+  url      String
+  userId   String
+  email    String
+  ticks    WebsiteTick[]
+  disabled Boolean       @default(false)
 }
 
 model Validator {
-  id        String      @id     @default(uuid())
-  publicKey String
-  location  String
-  ip        String
-  pendingPayouts  Int         @default(0)
-  ticks     WebsiteTick[]
+  id             String        @id @default(uuid())
+  publicKey      String
+  location       String
+  ip             String
+  pendingPayouts Int           @default(0)
+  ticks          WebsiteTick[]
 }
 
 model WebsiteTick {
-  id              String      @id     @default(uuid())
-  websiteId       String
-  validatorId     String
-  createdAt       DateTime
-  status          WebsiteStatus
-  latency         Float
-  website         Website    @relation(fields: [websiteId], references: [id])
-  validator       Validator    @relation(fields: [validatorId], references: [id])
+  id          String        @id @default(uuid())
+  websiteId   String
+  validatorId String
+  createdAt   DateTime
+  status      WebsiteStatus
+  latency     Float
+  website     Website       @relation(fields: [websiteId], references: [id])
+  validator   Validator     @relation(fields: [validatorId], references: [id])
 }
 
 enum WebsiteStatus {

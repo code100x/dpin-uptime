@@ -13,12 +13,13 @@ app.use(express.json());
 
 app.post("/api/v1/website", authMiddleware, async (req, res) => {
     const userId = req.userId!;
-    const { url } = req.body;
+    const { url, email } = req.body;
 
     const data = await prismaClient.website.create({
         data: {
             userId,
-            url
+            url, 
+            email
         }
     })
 

@@ -13,6 +13,8 @@
   "dependencies": {
     "@solana/kit": "^2.1.0",
     "@solana/web3.js": "^1.98.0",
+    "@types/nodemailer": "^6.4.17",
+    "nodemailer": "^6.10.0",
     "tweetnacl": "^1.0.3"
   }
 }
