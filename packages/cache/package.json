@@ -1,0 +1,13 @@
+{
+  "name": "cache",
+  "private": true,
+  "exports": {
+    "./redis": "./redis.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
