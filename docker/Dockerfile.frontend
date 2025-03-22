@@ -1,0 +1,15 @@
+FROM oven/bun:latest
+
+WORKDIR /app
+
+COPY ./apps/frontend/ ./apps/frontend
+COPY ./packages/ ./packages
+COPY package* .
+COPY turbo.json .
+COPY bun.lock .
+
+RUN bun install
+
+EXPOSE 3000
+
+CMD ["bun", "run", "frontend"]

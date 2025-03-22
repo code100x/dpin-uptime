@@ -1,0 +1,13 @@
+FROM oven/bun:latest
+
+WORKDIR /app
+
+COPY ./apps/validator ./apps/validator
+COPY ./packages/ ./packages
+COPY package* .
+COPY turbo.json .
+COPY bun.lock .
+
+RUN bun install
+
+CMD ["bun", "run", "validator"]

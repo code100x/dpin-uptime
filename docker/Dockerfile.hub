@@ -1,0 +1,17 @@
+FROM oven/bun:latest
+
+WORKDIR /app
+
+COPY ./apps/hub ./apps/hub
+COPY ./packages/ ./packages
+COPY package* .
+COPY turbo.json .
+COPY bun.lock .
+
+RUN bun install
+
+RUN bun run db:generate
+
+EXPOSE 8081
+
+CMD ["bun", "run", "hub"]

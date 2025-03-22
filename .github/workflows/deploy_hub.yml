@@ -1,0 +1,24 @@
+name: Docker push Hub
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-actions@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB.TOKEN }}
+      - name: Build and push Hub
+        uses: docker/build-push-actions@v5
+        with:
+          context: .
+          file: ./docker/Dockerfile.hub
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}:${{ github.sha}}
