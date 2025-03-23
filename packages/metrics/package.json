@@ -1,0 +1,19 @@
+{
+  "name": "metrics",
+  "module": "index.ts",
+  "type": "module",
+  "exports": {
+    "./metrics": "./index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@types/express": "^5.0.1",
+    "express": "^4.21.2",
+    "prom-client": "^15.1.3"
+  }
+}
