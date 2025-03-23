@@ -1,8 +1,9 @@
+---
 name: Docker push Frontend
+
 on:
   push:
     branches: [development]
-  workflow_dispatch:
 
 jobs:
   build-and-push:
@@ -14,11 +15,12 @@ jobs:
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB.TOKEN }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          
       - name: Build and push frontend
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./docker/Dockerfile.frontend
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/dpin-frontend:${{ github.sha}}
+          tags: io.pankaj/dpin-frontend:${{ github.sha}}
