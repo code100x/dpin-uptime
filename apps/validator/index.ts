@@ -15,39 +15,14 @@ const CALLBACKS: {
 
 let validatorId: string | null = null;
 
-async function main() {
-  // const keypair = Keypair.fromSecretKey(
-  //     Uint8Array.from(JSON.parse(process.env.PRIVATE_KEY!))
-  // );
+let ws: WebSocket | null = null;
 
-  const keypair = Keypair.fromSecretKey(bs58.decode(process.env.PRIVATE_KEY!));
-
-  interface IpInfo {
-    ip: string;
-    city?: string;
-    region?: string;
-    country?: string;
-    loc?: string; // Latitude and longitude ("37.7749,-122.4194")
-  }
-  async function getIpAndLocation(): Promise<IpInfo> {
-    try {
-      const response = await fetch("https://ipinfo.io/json");
-      const data = await response.json();
-      return data as IpInfo;
-    } catch (error) {
-      const response = await fetch("http://ip-api.com/json/");
-      const data = await response.json();
-      return {
-        ip: data.query,
-        city: data.city,
-        region: data.regionName,
-        country: data.country,
-        loc: `${data.lat},${data.lon}`,
-      };
-    }
+async function connectToHub(keypair: Keypair) {
+  if (ws?.readyState === WebSocket.OPEN) {
+    return; // Already connected
   }
 
-  const ws = new WebSocket("ws://localhost:8081");
+  ws = new WebSocket("ws://localhost:8081");
 
   ws.onmessage = async (event) => {
     const data: OutgoingMessage = JSON.parse(event.data);
@@ -55,7 +30,7 @@ async function main() {
       CALLBACKS[data.data.callbackId]?.(data.data);
       delete CALLBACKS[data.data.callbackId];
     } else if (data.type === "validate") {
-      await validateHandler(ws, data.data, keypair);
+      await validateHandler(ws!, data.data, keypair);
     }
   };
 
@@ -70,19 +45,38 @@ async function main() {
       keypair,
     );
 
-    ws.send(
+    ws!.send(
       JSON.stringify({
         type: "signup",
         data: {
           callbackId,
           ip: ipInfo.ip,
           publicKey: keypair.publicKey,
+          // loc: ipInfo.loc,
           signedMessage,
         },
       }),
     );
   };
+
+  ws.onclose = () => {
+    setTimeout(() => connectToHub(keypair), 5000);
+  };
+
+  ws.onerror = (error) => {
+    console.error('WebSocket error:', error);
+    ws?.close();
+  };
 }
+
+async function main() {
+  const keypair = Keypair.fromSecretKey(bs58.decode(process.env.PRIVATE_KEY!));
+  await connectToHub(keypair);
+}
+
+main();
+
+
 
 async function validateHandler(
   ws: WebSocket,
@@ -139,6 +133,28 @@ async function signMessage(message: string, keypair: Keypair) {
   return JSON.stringify(Array.from(signature));
 }
 
-main();
+interface IpInfo {
+  ip: string;
+  city?: string;
+  region?: string; 
+  country?: string;
+  loc?: string; // Latitude and longitude ("37.7749,-122.4194")
+}
 
-setInterval(async () => {}, 1000);
+async function getIpAndLocation(): Promise<IpInfo> {
+  try {
+    const response = await fetch("https://ipinfo.io/json");
+    const data = await response.json();
+    return data as IpInfo;
+  } catch (error) {
+    const response = await fetch("http://ip-api.com/json/");
+    const data = await response.json();
+    return {
+      ip: data.query,
+      city: data.city,
+      region: data.regionName,
+      country: data.country,
+      loc: `${data.lat},${data.lon}`,
+    };
+  }
+}

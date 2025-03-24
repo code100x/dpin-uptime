@@ -16,7 +16,7 @@ const COST_PER_VALIDATION = 100; // in lamports
 
 Bun.serve({
   fetch(req, server) {
-    if (server.upgrade(req)) {
+    if (server.upgrade(req)) { 
       return;
     }
     return new Response("Upgrade failed", { status: 500 });
@@ -146,61 +146,93 @@ async function verifyMessage(
   return result;
 }
 
-setInterval(async () => {
-  const websitesToMonitor = await prismaClient.website.findMany({
-    where: {
-      disabled: false,
+const BATCH_SIZE = 100; 
+const WEBSITES_PER_VALIDATOR = 3; 
+let lastProcessedId: string | null = null;
+
+async function distributeWebsites() {
+  // Skip distribution if no validators are available
+  if (availableValidators.length === 0) return;
+
+
+  // Fetch just one batch of websites
+  const websiteBatch = await prismaClient.website.findMany({
+    where: { disabled: false ,
+      ...(lastProcessedId ? {id: {gt: lastProcessedId } } : {} )
     },
+    take: BATCH_SIZE,
+    orderBy: {
+      id: 'asc'
+    }
   });
 
-  for (const website of websitesToMonitor) {
-    availableValidators.forEach((validator) => {
-      const callbackId = randomUUIDv7();
-      console.log(
-        `Sending validate to ${validator.validatorId} ${website.url}`,
-      );
-      validator.socket.send(
-        JSON.stringify({
-          type: "validate",
-          data: {
-            url: website.url,
-            callbackId,
-          },
-        }),
-      );
-
-      CALLBACKS[callbackId] = async (data: IncomingMessage) => {
-        if (data.type === "validate") {
-          const { validatorId, status, latency, signedMessage } = data.data;
-          const verified = await verifyMessage(
-            `Replying to ${callbackId}`,
-            validator.publicKey,
-            signedMessage,
-          );
-          if (!verified) {
-            return;
-          }
-
-          await prismaClient.$transaction(async (tx) => {
-            await tx.websiteTick.create({
-              data: {
-                websiteId: website.id,
-                validatorId,
-                status,
-                latency,
-                createdAt: new Date(),
-              },
-            });
-
-            await tx.validator.update({
-              where: { id: validatorId },
-              data: {
-                pendingPayouts: { increment: COST_PER_VALIDATION },
-              },
-            });
-          });
-        }
-      };
-    });
+  if(websiteBatch.length === 0 ){
+    lastProcessedId = null;
+    return;
   }
-}, 60 * 1000);
+
+  // Distribute websites round-robin style to validators
+  let validatorIndex = 0;
+  let websiteCount = 0;
+
+  for (const website of websiteBatch) {
+    // If this validator has enough websites, move to next validator
+    if (websiteCount >= WEBSITES_PER_VALIDATOR) {
+      validatorIndex = (validatorIndex + 1) % availableValidators.length;
+      websiteCount = 0;
+    }
+
+    const validator = availableValidators[validatorIndex];
+    
+    const callbackId = randomUUIDv7();
+    console.log(
+      `Sending validate to ${validator.validatorId} ${website.url}`,
+    );
+    validator.socket.send(
+      JSON.stringify({
+        type: "validate",
+        data: {
+          url: website.url,
+          callbackId,
+        },
+      }),
+    );
+
+    CALLBACKS[callbackId] = async (data: IncomingMessage) => {
+      if (data.type === "validate") {
+        const { validatorId, status, latency, signedMessage } = data.data;
+        const verified = await verifyMessage(
+          `Replying to ${callbackId}`,
+          validator.publicKey,
+          signedMessage,
+        );
+        if (!verified) {
+          return;
+        }
+
+        await prismaClient.$transaction(async (tx) => {
+          await tx.websiteTick.create({
+            data: {
+              websiteId: website.id,
+              validatorId,
+              status,
+              latency,
+              createdAt: new Date(),
+            },
+          });
+
+          await tx.validator.update({
+            where: { id: validatorId },
+            data: {
+              pendingPayouts: { increment: COST_PER_VALIDATION },
+            },
+          });
+        });
+      }
+    };
+
+    websiteCount++;
+  }
+}
+
+setInterval(distributeWebsites, 60 * 10000);

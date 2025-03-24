@@ -4,6 +4,7 @@ name: Docker push Api
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   build-and-push:
@@ -17,29 +18,12 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push worker
+
+      - name: Build and push api
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./docker/Dockerfile.api
           push: true
-          tags: io.pankaj/api-backend:${{ github.sha}}
+          tags: 100xdevs/dpin-uptime-api:${{ github.sha}}
 
-      - name: Verify Pushed Image
-        run: |
-          docker pull io.pankaj/api-backend:${{ github.sha }}
-
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          scripts: |
-            sudo docker pull io.pankaj/api-backend:${{ github.sha }}
-            sudo docker stop api-backend || true
-            sudo docker rm api-backend || true
-            sudo docker run -d \
-              --name api-backend \
-              -p 8080:8080 \
-              io.pankaj/api-backend:${{ github.sha }}

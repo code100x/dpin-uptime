@@ -21,4 +21,4 @@ jobs:
           context: .
           file: ./docker/Dockerfile.hub
           push: true
-          tags: io.pankaj/hub-backend:${{ github.sha}}
+          tags: 100xdevs/dpin-uptime-hub:${{ github.sha}}

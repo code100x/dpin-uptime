@@ -17,10 +17,11 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Build and push Validator
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./docker/Dockerfile.validator
           push: true
-          tags: io.pankaj/validator-backend:${{ github.sha}}
+          tags: 100xdevs/dpin-uptime-validator:${{ github.sha}}

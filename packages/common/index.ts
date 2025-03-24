@@ -3,6 +3,7 @@ export interface SignupIncomingMessage {
   publicKey: string;
   signedMessage: string;
   callbackId: string;
+  // loc: string;
 }
 
 export interface ValidateIncomingMessage {
@@ -33,7 +34,8 @@ export type IncomingMessage =
   | {
       type: "validate";
       data: ValidateIncomingMessage;
-    };
+    }
+  
 
 export type OutgoingMessage =
   | {
