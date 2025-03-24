@@ -92,6 +92,4 @@ async function signMessage(message: string, keypair: Keypair) {
 
 main();
 
-setInterval(async () => {
-
-}, 10000);
+setInterval(async () => {}, 10000);
