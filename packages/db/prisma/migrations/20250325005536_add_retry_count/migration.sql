@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Transactions" ADD COLUMN     "retryCount" INTEGER NOT NULL DEFAULT 0,
+ALTER COLUMN "createdAt" SET DEFAULT CURRENT_TIMESTAMP,
+ALTER COLUMN "status" SET DEFAULT 'Pending';

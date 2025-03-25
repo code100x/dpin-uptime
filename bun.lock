@@ -77,6 +77,19 @@
         "typescript": "^5.0.0",
       },
     },
+    "apps/poller": {
+      "name": "poller",
+      "dependencies": {
+        "@solana/web3.js": "^1.98.0",
+      },
+      "devDependencies": {
+        "@types/bun": "latest",
+        "db": "*",
+      },
+      "peerDependencies": {
+        "typescript": "^5",
+      },
+    },
     "apps/validator": {
       "name": "validator",
       "dependencies": {
@@ -1315,6 +1328,8 @@
     "picocolors": ["picocolors@1.0.1", "", {}, "sha512-anP1Z8qwhkbmu7MFP5iTt+wQKXgwzf7zTyGlcdzabySa9vd0Xt392U0rVmz9poOaBj0uHJKyyo9/upk0HrEQew=="],
 
     "picomatch": ["picomatch@2.3.1", "", {}, "sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA=="],
+
+    "poller": ["poller@workspace:apps/poller"],
 
     "possible-typed-array-names": ["possible-typed-array-names@1.1.0", "", {}, "sha512-/+5VFTchJDoVj3bhoqi6UeymcD00DAwb1nJwamzPvHEszJ4FpF6SNNbUbOS8yI56qHzdV8eK0qEfOSiodkTdxg=="],
 

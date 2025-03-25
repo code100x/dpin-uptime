@@ -14,48 +14,56 @@ datasource db {
 }
 
 model User {
-  id              String          @id     @default(uuid())
+  id              String            @id     @default(uuid())
   email           String
 }
 
 model Website {
-  id              String          @id     @default(uuid())
+  id              String            @id     @default(uuid())
   url             String
   userId          String
   ticks           WebsiteTick[]
-  disabled        Boolean         @default(false)
+  disabled        Boolean           @default(false)
 }
 
 model Validator {
-  id              String          @id     @default(uuid())
+  id              String            @id     @default(uuid())
   publicKey       String
   location        String
   ip              String
-  pendingPayouts  Int             @default(0)
+  pendingPayouts  Int               @default(0)
   ticks           WebsiteTick[]
   transactions    Transactions[]
-  isPaidOut       Boolean         @default(false)
+  isPaidOut       Boolean           @default(false)
   lockedAt        DateTime?       
 }
 
 model WebsiteTick {
-  id              String          @id     @default(uuid())
+  id              String            @id     @default(uuid())
   websiteId       String
   validatorId     String
   createdAt       DateTime
   status          WebsiteStatus
   latency         Float
-  website         Website         @relation(fields: [websiteId], references: [id])
-  validator       Validator       @relation(fields: [validatorId], references: [id])
+  website         Website           @relation(fields: [websiteId], references: [id])
+  validator       Validator         @relation(fields: [validatorId], references: [id])
 }
 
 model Transactions{
-  id             String           @id @default(uuid())
+  id             String             @id @default(uuid())
   amount         Int              
   signature      String
   validatorId    String
-  validator      Validator        @relation(fields: [validatorId], references: [id])
-  createdAt      DateTime
+  validator      Validator          @relation(fields: [validatorId], references: [id])
+  createdAt      DateTime           @default(now())
+  status         TransactionStatus  @default(Pending) //having as pending so that poller confirms it later
+  retryCount     Int                @default(0)
+}
+
+enum TransactionStatus {
+  Pending
+  Success
+  Failure
 }
 
 enum WebsiteStatus {

@@ -152,14 +152,11 @@ app.post("/api/v1/payout/:validatorId", async (req, res) => {
         await prismaClient.validator.update({
             where:{id: validatorId},
             data:{
-                pendingPayouts: 0,
-                isPaidOut: true,
                 lockedAt: null,
                 transactions:{
                     create:{
                         amount: amount,
-                        signature: signature,
-                        createdAt: new Date
+                        signature: signature
                     } as Prisma.TransactionsCreateWithoutValidatorInput 
                 }
             }
