@@ -3,6 +3,7 @@ import {prismaClient} from "db/client";
 
 const connection= new Connection(`${process.env.RPC_URL}`);
 const maxRetries=3;
+const pollingInterval=5000;
 
 const pollPendingTransactions=async()=>{
     const pendingTxns= await prismaClient.transactions.findMany({
@@ -72,3 +73,8 @@ const pollPendingTransactions=async()=>{
     }
 
 };
+
+const poll=()=>{
+    setInterval(pollPendingTransactions, pollingInterval);
+};
+poll();
