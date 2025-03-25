@@ -1,4 +1,5 @@
 FROM oven/bun:1
+
 ARG DATABASE_URL
 
 WORKDIR /usr/src/app
@@ -12,15 +13,14 @@ COPY ./package*.json ./package*.json
  
 COPY turbo.json turbo.json
 
+COPY ./apps/frontend ./apps/frontend
 
 RUN bun install 
 
-COPY ./apps/frontend ./apps/frontend
 
-RUN echo "DATABASE_URL: ${DATABASE_URL}"
+RUN DATABASE_URL=$DATABASE_URL bun run db:generate
+RUN DATABASE_URL=$DATABASE_URL bun run frontend:build
 
-RUN DATABASE_URL=${DATABASE_URL}  bun db:generate
-RUN DATABASE_URL=${DATABASE_URL}  bun run build
 
 
 EXPOSE 3000

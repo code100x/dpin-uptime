@@ -13,6 +13,7 @@
     "db:migrate": "cd ./packages/db && bunx prisma migrate dev && cd ../..",
     "db:generate": "cd ./packages/db && bunx prisma generate && cd ../..",
     "frontend": "cd ./apps/frontend && bun run dev",
+    "frontend:build": "cd ./apps/frontend && bun run build",
     "frontend:prod": "cd ./apps/frontend && bun run start"
   },
   "devDependencies": {
