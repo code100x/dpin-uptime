@@ -1,0 +1,8 @@
+betteruptime.10kdevs.com {
+    reverse_proxy localhost:3000
+}
+
+betteruptime-api.10kdevs.com {
+    reverse_proxy localhost:8000 
+}
+

@@ -27,3 +27,17 @@ jobs:
           push: true
           tags: 100xdevs/dpin-uptime-api:${{ github.sha}}
 
+      - name: Deploy to api ec2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.API_EC2_IP }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            #login to Docker Hub in case of private repo
+            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }}
+            #stop and remove existing api container 
+            docker stop betteruptime-api || true
+            docker rm betteruptime-api || true
+            docker pull 100xdevs.com/dpin-uptime-api:${{ github.sha }}
+            docker run -d --name betteruptime-api -p 3000:3000 100xdevs/dpin-uptime-api:${{ github.sha }}

@@ -1,0 +1,3 @@
+betteruptime-hub.10kdevs.com {
+    reverse_proxy localhost:8081 
+}

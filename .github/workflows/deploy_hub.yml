@@ -22,3 +22,18 @@ jobs:
           file: ./docker/Dockerfile.hub
           push: true
           tags: 100xdevs/dpin-uptime-hub:${{ github.sha}}
+
+      - name: Deploy to Frontend ec2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HUB_EC2_IP }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            #login to Docker Hub in case of private repo
+            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }}
+            #stop and remove existing hub container 
+            docker stop betteruptime-hub || true
+            docker rm betteruptime-hub || true
+            docker pull 100xdevs.com/dpin-uptime-hub:${{ github.sha }}
+            docker run -d --name betteruptime-hub -p 3000:3000 100xdevs/dpin-uptime-hub:${{ github.sha }}

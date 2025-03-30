@@ -25,3 +25,7 @@ jobs:
           file: ./docker/Dockerfile.validator
           push: true
           tags: 100xdevs/dpin-uptime-validator:${{ github.sha}}
+
+
+      #no need to push to ec2 as every validator will run accouring to them 
+      # we will just publish docker imageUrl 
