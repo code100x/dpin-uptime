@@ -2,6 +2,9 @@
   "name": "api",
   "module": "index.ts",
   "type": "module",
+  "scripts": {
+    "dev": "bun index.ts"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
@@ -15,6 +18,7 @@
     "@types/jsonwebtoken": "^9.0.9",
     "cors": "^2.8.5",
     "db": "*",
+    "common": "*",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "jwt": "^0.2.0"

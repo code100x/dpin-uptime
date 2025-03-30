@@ -1,0 +1,21 @@
+FROM oven/bun:1
+
+WORKDIR /usr/src/app
+
+COPY ./packages ./packages
+
+COPY ./bun.lock ./bun.lock
+COPY ./package.json ./package.json
+
+COPY ./package*.json ./package*.json
+
+COPY turbo.json turbo.json
+
+
+RUN bun install 
+COPY ./apps/validator ./apps/validator
+RUN bun db:generate
+
+
+
+CMD [ "bun", "run", "validator" ]

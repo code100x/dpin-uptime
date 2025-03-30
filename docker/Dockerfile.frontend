@@ -1,0 +1,27 @@
+FROM oven/bun:1 
+
+ARG DATABASE_URL
+
+WORKDIR /usr/src/app
+
+COPY ./packages ./packages
+
+COPY ./bun.lock ./bun.lock
+COPY ./package.json ./package.json
+
+COPY ./package*.json ./package*.json
+ 
+COPY turbo.json turbo.json
+
+COPY ./apps/frontend ./apps/frontend
+
+RUN bun install 
+
+
+RUN DATABASE_URL=$DATABASE_URL bun run db:generate
+RUN DATABASE_URL=$DATABASE_URL bun run frontend:build
+
+
+EXPOSE 3000
+
+CMD [ "bun", "run", "frontend:prod" ]

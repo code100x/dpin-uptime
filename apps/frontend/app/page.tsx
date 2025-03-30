@@ -1,10 +1,10 @@
 "use client"
 import React, { useEffect, useState } from 'react';
-import { Activity, Bell, Clock, Server, ArrowRight, Check, Moon, Sun } from 'lucide-react';
+import { Activity, Bell, Clock, Server, ArrowRight, Check} from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 function App() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -90,6 +90,7 @@ function App() {
                 "5 team members",
                 "24h data retention"
               ]}
+              featured={false}
             />
             <PricingCard
               title="Professional"
@@ -115,6 +116,7 @@ function App() {
                 "90-day data retention",
                 "SLA guarantee"
               ]}
+              featured={true}
             />
           </div>
         </div>
@@ -167,7 +169,7 @@ function App() {
   );
 }
 
-function FeatureCard({ icon, title, description }) {
+function FeatureCard({ icon, title, description }: {icon: React.ReactNode, title: string, description: string}) {
   return (
     <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
       <div className="mb-4">{icon}</div>
@@ -177,7 +179,7 @@ function FeatureCard({ icon, title, description }) {
   );
 }
 
-function PricingCard({ title, price, features, featured = false }) {
+function PricingCard({ title, price, features, featured = false }: { title: string, price: string, features: string[] , featured: boolean}) {
   return (
     <div className={`p-8 rounded-lg ${
       featured

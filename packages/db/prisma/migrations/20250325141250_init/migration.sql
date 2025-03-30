@@ -14,6 +14,7 @@ CREATE TABLE "Website" (
     "id" TEXT NOT NULL,
     "url" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
+    "disabled" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "Website_pkey" PRIMARY KEY ("id")
 );
@@ -24,6 +25,7 @@ CREATE TABLE "Validator" (
     "publicKey" TEXT NOT NULL,
     "location" TEXT NOT NULL,
     "ip" TEXT NOT NULL,
+    "pendingPayouts" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "Validator_pkey" PRIMARY KEY ("id")
 );

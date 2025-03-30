@@ -1,9 +1,9 @@
 {
-  "name": "db",
+  "name": "metrics",
   "module": "index.ts",
   "type": "module",
   "exports": {
-    "./client": "./src/index.ts"
+    "./metrics": "./index.ts"
   },
   "devDependencies": {
     "@types/bun": "latest"
@@ -12,10 +12,8 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@prisma/client": "6.5.0",
-    "prisma": "^6.5.0"
-  },
-  "prisma": {
-    "seed": "./prisma/seed.ts"
+    "@types/express": "^5.0.1",
+    "express": "^4.21.2",
+    "prom-client": "^15.1.3"
   }
 }

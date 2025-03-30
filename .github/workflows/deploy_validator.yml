@@ -1,0 +1,31 @@
+---
+name: Docker push Validator
+
+on:
+  push:
+    branches: [main]
+
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Validator
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./docker/Dockerfile.validator
+          push: true
+          tags: 100xdevs/dpin-uptime-validator:${{ github.sha}}
+
+
+      #no need to push to ec2 as every validator will run accouring to them 
+      # we will just publish docker imageUrl 
