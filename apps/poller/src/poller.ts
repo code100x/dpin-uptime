@@ -39,7 +39,12 @@ const pollPendingTransactions=async()=>{
                 else {
                     console.log(`Retrying transaction ${txn.id} attemp no. ${txn.retryCount+1}`);
                     const fromKeypair=Keypair.fromSecretKey(Uint8Array.from(JSON.parse(`${process.env.PRIVATE_KEY}`)));
-                    const toPublicKey= new PublicKey(txn.validatorId);
+                    const validator= await prismaClient.validator.findMany({
+                        where: {
+                            id: txn.validatorId
+                        }
+                    });
+                    const toPublicKey= new PublicKey(validator.publicKey);
                     const amount= txn.amount;
 
                     const transaction= new Transaction().add(
